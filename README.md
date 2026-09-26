@@ -6,6 +6,13 @@ ReviewSentinel targets a repetitive developer workflow: **code review**. It comb
 
 ---
 
+## Project Links
+
+- **GitHub Repository:** https://github.com/skmursalim9779-create/ReviewSentinel-IBM-Bob2
+- **Live Demo:** https://reviewsentinel-hfr8.onrender.com
+
+---
+
 ## Live Demo
 
 **https://reviewsentinel-hfr8.onrender.com**
