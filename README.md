@@ -2,181 +2,444 @@
 
 **Agentic code-review and security-audit copilot for the IBM Bob 2.0 Hackathon**
 
-ReviewSentinel targets a repetitive developer workflow: code review. It combines deterministic local checks with optional AI explanations and produces artifacts that both humans and developer tooling can consume.
+ReviewSentinel targets a repetitive developer workflow: **code review**. It combines deterministic local security checks with optional AI explanations and produces artifacts that can be consumed by both humans and developer tooling.
 
 ## Live Demo
 
-https://reviewsentinel-hfr8.onrender.com
+**https://reviewsentinel-hfr8.onrender.com**
 
-## The workflow
+The deployed demo supports pasted-code reviews and the bundled demonstration workflow.
+
+---
+
+## The Workflow
 
 ```text
-Repository / pasted file / public GitHub repo
-                    │
-                    ▼
-             Deterministic scan
-                    │
-        ┌───────────┼────────────┐
-        ▼           ▼            ▼
-      Secrets   Injection   Unsafe execution
-        │           │            │
-        └───────────┼────────────┘
-                    ▼
-            Finding + redaction
-                    │
-            optional AI review
-                    │
-        ┌───────────┼────────────┐
-        ▼           ▼            ▼
-      Explain    Suggested fix  Triage
-                    │
-                    ▼
-         Markdown + JSON + SARIF
-```
+Repository / pasted file / public GitHub repository
+                         │
+                         ▼
+                  Deterministic Scan
+                         │
+             ┌───────────┼───────────┐
+             ▼           ▼           ▼
+          Secrets    Injection    Unsafe Execution
+             │           │           │
+             └───────────┼───────────┘
+                         ▼
+                  Finding + Redaction
+                         │
+                  Optional AI Review
+                         │
+             ┌───────────┼───────────┐
+             ▼           ▼           ▼
+          Explain    Suggested Fix   Triage
+                         │
+                         ▼
+              Markdown + JSON + SARIF
 
-## Why it fits the hackathon
+The core design keeps deterministic analysis separate from the optional AI explanation layer.
 
-The hackathon brief asks builders to improve a developer workflow where time, effort, or errors are high. Its examples include intelligent code review, testing, maintenance, and release workflows. ReviewSentinel focuses on code review and makes the workflow reproducible: the same repository gets the same deterministic findings, while an optional AI layer turns findings into concise explanations and remediation advice.
+Why ReviewSentinel Fits the Hackathon
 
-IBM Bob is part of the **development workflow**, not a claim that the runtime application is itself IBM Bob. Use Bob IDE in Agent/Plan/Ask modes, focused tasks, and subagents while building the project; capture the required session evidence under `bob_sessions/`.
+The hackathon brief asks builders to improve developer workflows where time, effort, or errors are high. Examples include intelligent code review, testing, maintenance, and release workflows.
 
-## What is included
+ReviewSentinel focuses on code review and makes the workflow reproducible:
 
-- Python package with a clean `pyproject.toml` and console entry point.
-- Static scanners for credential-like strings, injection-prone SQL/shell constructions, dynamic execution/unsafe deserialization, weak hashing, and oversized Python functions.
-- Secret redaction before findings reach reports or the optional LLM step.
-- Markdown, JSON and SARIF 2.1.0 output.
-- `--fail-on` for CI quality gates.
-- Zero-build web demo on `/` with three safe demo modes:
-  - bundled synthetic repository;
-  - pasted source file;
-  - public GitHub repository URL (with size/path limits).
-- Automated tests and GitHub Actions CI.
-- Docker/Render-friendly startup.
+A repository or source file is scanned using deterministic rules.
+Findings are normalized and sensitive values are redacted.
+An optional AI layer explains selected findings and suggests remediation.
+Results are emitted as Markdown, JSON, and SARIF.
+The same workflow can be demonstrated through the web interface.
+IBM Bob 2.0 in the Development Workflow
 
-## Local setup
+IBM Bob is part of the development workflow, not a claim that the runtime application itself is IBM Bob.
 
-```bash
+Bob IDE is used for:
+
+planning the architecture and acceptance criteria;
+implementing focused changes;
+running focused Agent tasks;
+using subagents where appropriate;
+testing and verification;
+refactoring and documentation updates;
+capturing task/session evidence for the hackathon.
+
+The repository includes AGENTS.md as persistent project context and bob_sessions/ for Bob-related evidence.
+
+What Is Included
+Python package with a clean pyproject.toml and console entry point.
+Deterministic static scanners for:
+credential-like strings;
+injection-prone SQL constructions;
+shell-command risks;
+dynamic execution and unsafe deserialization;
+weak hashing;
+oversized Python functions;
+insecure randomness;
+path-traversal patterns.
+Secret redaction before findings reach reports or the optional LLM layer.
+Markdown, JSON, and SARIF 2.1.0 output.
+--fail-on support for CI quality gates.
+Zero-build web demo with three review modes:
+bundled synthetic repository;
+pasted source file;
+public GitHub repository URL with archive/path safety limits.
+Automated test suite.
+GitHub Actions CI workflow.
+Docker/Render-friendly deployment configuration.
+Local Setup
+
+Create and activate a virtual environment:
+
 python -m venv .venv
-# Windows PowerShell: .venv\Scripts\Activate.ps1
-# macOS/Linux:      source .venv/bin/activate
+Windows PowerShell
+.venv\Scripts\Activate.ps1
+macOS / Linux
+source .venv/bin/activate
+
+Install the package in editable mode:
+
 pip install -e .
-```
 
-Run the deterministic demo:
+For development and testing dependencies:
 
-```bash
+pip install -e ".[dev]"
+Run the Deterministic Scanner
+
+Scan the bundled synthetic repository:
+
 reviewsentinel scan sample_repo --out reports/sample --no-explain
-```
 
-CI gate example:
+The command produces:
 
-```bash
-reviewsentinel scan sample_repo --out reports/ci --no-explain --fail-on high
-```
+reports/sample.md
+reports/sample.json
+reports/sample.sarif
 
-Run the web demo:
+Example CI quality gate:
 
-```bash
+reviewsentinel scan sample_repo \
+  --out reports/ci \
+  --no-explain \
+  --fail-on high
+Run the Web Demo
+
+Start the local web application:
+
 reviewsentinel-web
-```
 
-Open `http://localhost:8000`.
+Then open:
 
-## Optional AI explanations
+http://localhost:8000
 
-No API key is required for the core scanner.
+The web demo provides:
 
-### watsonx.ai
+Scan demo repo
+Load code example
+pasted-code review
+public GitHub repository review
 
-```text
+The interface displays:
+
+number of scanned files;
+number of findings;
+calculated health score;
+scan time;
+severity and category;
+redacted code snippets;
+security rationale;
+suggested remediation.
+Optional AI Explanations
+
+The deterministic scanner does not require an API key.
+
+AI explanations are optional and can be configured through supported providers.
+
+watsonx.ai
 LLM_PROVIDER=watsonx
+
 WATSONX_URL=...
 WATSONX_PROJECT_ID=...
 WATSONX_API_KEY=...
 WATSONX_MODEL_ID=...
-```
-
-### OpenAI-compatible endpoint
-
-```text
+OpenAI-Compatible Endpoint
 LLM_PROVIDER=openai_compatible
+
 LLM_BASE_URL=...
 LLM_API_KEY=...
 LLM_MODEL=...
-```
+Privacy Boundary
 
-Only the flagged, already-redacted snippet is sent to the optional explanation layer. Full source files and excluded directories are not sent by ReviewSentinel.
+Only the flagged, already-redacted snippet is sent to the optional explanation layer.
 
-## Bob IDE build protocol
+ReviewSentinel does not send:
 
-Use the included `AGENTS.md` as persistent project context. A practical Bob workflow is:
+full source files;
+raw credential values;
+excluded directories;
+private/client repositories through the bundled synthetic demo workflow.
 
-1. Plan the architecture and acceptance criteria in Plan mode.
-2. Implement scanner hardening as one focused Agent task.
-3. Implement the review/report/CI workflow as a separate task.
-4. Implement/refine the demo surface separately.
-5. Run tests and security checks in a final quality task.
-6. Update documentation and submission artifacts in a final documentation task.
+The deterministic scanner remains usable even when no AI provider is configured.
 
-Capture the required Bob task session evidence after each task actually used. See `bob_sessions/README.md`.
+Security and Privacy Boundaries
 
-## Measuring impact
+ReviewSentinel is designed around a small and explicit security boundary.
 
-Do not invent benchmark numbers. Measure the same repository before/after using a reproducible manual-review baseline and record:
+The bundled demonstration repository is synthetic.
+Never commit real secrets.
+Never commit private or client source code.
+.gitignore blocks .env files.
+.bobignore keeps sensitive/generated directories out of Bob context.
+GitHub demo mode accepts https://github.com/owner/repo style repository URLs.
+Downloaded GitHub archives are subject to size/path safety checks.
+ZIP members are checked against path traversal.
+Credential-like source lines are redacted before reporting.
+No exploit payloads or attack tooling are generated.
+Scanner implementations are deterministic and side-effect free.
 
-- scan wall-clock time;
-- number of findings and categories;
-- consistency across repeated runs;
-- time required to understand and triage the generated report.
+See:
 
-The application exposes scan time and finding counts so your video/deck can use real measurements.
+docs/dataset-sources.md
 
-## Data and security boundaries
+for the data-source record.
 
-- The bundled sample is synthetic.
-- Never commit real secrets or private/client repositories.
-- `.gitignore` blocks `.env`; `.bobignore` keeps sensitive/generated folders out of Bob context.
-- GitHub demo mode accepts only `https://github.com/owner/repo` URLs, limits archive size, and rejects path traversal in ZIP members.
-- Scanner output for credential-like lines is redacted before reporting.
-- No exploit payloads are generated.
+Bob IDE Development Protocol
 
-See `docs/dataset-sources.md` for the data-source record.
+AGENTS.md defines the persistent working context and development constraints.
 
-## Project layout
+A practical IBM Bob workflow for this repository is:
 
-```text
+Plan mode
+Analyze the repository, define scope, acceptance criteria, and implementation order.
+Focused Agent task
+Implement one clearly bounded change.
+Subagents / parallel work where appropriate
+Use focused subagent work for independent areas such as tests, scanner improvements, documentation, or verification.
+Testing task
+Run the relevant test suite and verify regressions.
+Quality task
+Run final scanner, CLI, web, and reporting checks.
+Documentation task
+Update README, demo instructions, and hackathon artifacts.
+Evidence capture
+Capture the required Bob task/session evidence after each Bob task that was actually used.
+
+Bob session evidence is stored under:
+
+bob_sessions/
+
+See:
+
+docs/bob-workflow.md
+
+for the repository's documented Bob workflow.
+
+Testing
+
+Run the complete test suite with:
+
+python -m pytest -q
+
+The current implementation includes tests covering:
+
+scanner behavior;
+false-positive regressions;
+engine/config utilities;
+report generation;
+CLI behavior;
+LLM reviewer behavior;
+CI-related execution paths.
+
+A final implementation state should only be described using test results that were actually executed.
+
+Reporting
+
+ReviewSentinel produces three report formats.
+
+Markdown
+
+Human-readable security findings and remediation context.
+
+JSON
+
+Machine-readable structured findings suitable for automation and downstream processing.
+
+SARIF 2.1.0
+
+A standard security-analysis interchange format suitable for integration with developer and CI tooling.
+
+Typical outputs:
+
+reports/sample.md
+reports/sample.json
+reports/sample.sarif
+Measuring Impact
+
+Do not invent benchmark numbers.
+
+Measure the same repository before and after changes using a reproducible manual-review baseline.
+
+Record:
+
+scan wall-clock time;
+number of findings;
+finding categories;
+consistency across repeated scans;
+time required to understand and triage the generated report.
+
+The application exposes scan time and finding counts so real measurements can be used in the hackathon presentation and demo.
+
+Project Layout
 reviewsentinel/
 ├── AGENTS.md
 ├── README.md
+├── START_HERE.md
 ├── pyproject.toml
 ├── requirements.txt
 ├── .bobignore
 ├── .gitignore
 ├── .env.example
+│
 ├── bob_sessions/
+│
 ├── docs/
+│   ├── architecture.md
+│   ├── bob-workflow.md
+│   ├── dataset-sources.md
+│   ├── demo-script.md
+│   ├── hackathon-compliance.md
+│   └── submission-checklist.md
+│
 ├── examples/
+│
+├── reports/
+│
 ├── sample_repo/
-├── src/reviewsentinel/
-│   ├── cli.py
-│   ├── config.py
-│   ├── engine.py
-│   ├── llm_reviewer.py
-│   ├── report.py
-│   ├── web.py
-│   └── scanners/
+│
+├── sample_repo_fixed/
+│
+├── src/
+│   └── reviewsentinel/
+│       ├── cli.py
+│       ├── config.py
+│       ├── engine.py
+│       ├── llm_reviewer.py
+│       ├── report.py
+│       ├── web.py
+│       └── scanners/
+│
 └── tests/
-```
+Demo Story for the Hackathon
+Problem
 
-## Demo story for the hackathon
+Developers repeatedly rediscover common risky coding patterns and rewrite similar explanations during code review.
 
-**Problem:** reviewers repeatedly rediscover common risky patterns and then rewrite the same explanations.
+Solution
 
-**Demo:** start with the bundled repo or a public repo → scan → show severity/category summary → open one finding → show redacted snippet + AI explanation + suggested fix → download/inspect SARIF for CI tooling.
+ReviewSentinel turns this repetitive process into a reproducible workflow:
 
-**Bob evidence:** during development, show Bob Plan/Agent tasks, focused subagents, and the required task session summaries in `bob_sessions/`.
+Scan
+  ↓
+Detect
+  ↓
+Redact
+  ↓
+Explain
+  ↓
+Suggest remediation
+  ↓
+Report
+Demo Flow
 
-## License
+A recommended demonstration sequence is:
 
-MIT.
+Open the ReviewSentinel web demo.
+Load the bundled code example or demo repository.
+Run the review.
+Show the finding count, health score, and scan time.
+Open a security finding.
+Show the redacted snippet.
+Show the explanation and suggested remediation when AI is enabled.
+Demonstrate structured Markdown, JSON, or SARIF output.
+Show the equivalent development workflow inside IBM Bob.
+Bob Evidence
+
+During the project build, demonstrate:
+
+Bob Plan mode;
+focused Agent tasks;
+subagent work where appropriate;
+test execution;
+implementation/refactoring work;
+documentation updates;
+real Bob task/session evidence stored in:
+bob_sessions/
+Hackathon Submission Evidence
+
+The repository contains supporting documentation and evidence for the IBM Bob 2.0 Hackathon, including:
+
+docs/bob-workflow.md
+docs/hackathon-compliance.md
+docs/submission-checklist.md
+bob_sessions/
+
+Bob evidence should correspond to real Bob tasks actually performed during development.
+
+Do not create or alter evidence to represent work that was not performed.
+
+Deployment
+
+The application is deployable as a Docker/Render web service.
+
+Live Deployment
+https://reviewsentinel-hfr8.onrender.com
+
+The deployed service is configured from the repository's:
+
+render.yaml
+Current Demonstration Capabilities
+
+The live demo currently demonstrates:
+
+pasted-code security review;
+deterministic finding detection;
+secret redaction;
+severity classification;
+health scoring;
+scan-time reporting;
+security findings for multiple vulnerability categories;
+optional AI explanation support;
+Render deployment.
+
+Example findings demonstrated by the bundled workflow include:
+
+hardcoded credential detection;
+SQL injection-prone query construction;
+weak hashing such as MD5;
+shell execution risks;
+path traversal risks;
+unsafe deserialization;
+insecure random-number generation.
+Validation
+
+The project was locally validated with:
+
+87 tests passing
+
+The bundled synthetic vulnerable repository produced:
+
+8 findings
+
+The fixed counterpart repository produced:
+
+0 findings
+
+The pasted-code workflow produced:
+
+3 findings
+
+These values are based on the current validated build.
+
+License
+
+MIT
