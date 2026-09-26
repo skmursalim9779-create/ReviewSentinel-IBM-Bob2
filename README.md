@@ -4,6 +4,10 @@
 
 ReviewSentinel targets a repetitive developer workflow: code review. It combines deterministic local checks with optional AI explanations and produces artifacts that both humans and developer tooling can consume.
 
+## Live Demo
+
+https://reviewsentinel-hfr8.onrender.com
+
 ## The workflow
 
 ```text
