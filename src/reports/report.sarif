@@ -1,0 +1,250 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ReviewSentinel",
+          "version": "0.2.0",
+          "rules": [
+            {
+              "id": "RS-EVAL-001",
+              "name": "RS-EVAL-001",
+              "shortDescription": {
+                "text": "Use of eval() on dynamic input."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "RS-SECRET-001",
+              "name": "RS-SECRET-001",
+              "shortDescription": {
+                "text": "Possible hardcoded credential assigned to 'STRIPE_API_KEY'."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "RS-INJECT-001",
+              "name": "RS-INJECT-001",
+              "shortDescription": {
+                "text": "SQL query appears to be assembled with string formatting/concatenation instead of parameterized bindings."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "RS-INJECT-002",
+              "name": "RS-INJECT-002",
+              "shortDescription": {
+                "text": "Shell command uses os.system or shell=True; verify inputs cannot control the command."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "RS-TRAVERSE-001",
+              "name": "RS-TRAVERSE-001",
+              "shortDescription": {
+                "text": "Path traversal risk: open() with dynamic path \u2014 validate and sanitize the path argument."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "RS-CRYPTO-001",
+              "name": "RS-CRYPTO-001",
+              "shortDescription": {
+                "text": "MD5 is unsuitable for security-sensitive hashing; use a modern hash or password KDF as appropriate."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            },
+            {
+              "id": "RS-EVAL-004",
+              "name": "RS-EVAL-004",
+              "shortDescription": {
+                "text": "yaml.load() without SafeLoader can instantiate arbitrary Python objects from untrusted YAML."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            },
+            {
+              "id": "RS-CRYPTO-003",
+              "name": "RS-CRYPTO-003",
+              "shortDescription": {
+                "text": "Use of insecure random module \u2014 use secrets or os.urandom for cryptographic purposes."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "RS-EVAL-001",
+          "level": "error",
+          "message": {
+            "text": "Use of eval() on dynamic input."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "user_service.py"
+                },
+                "region": {
+                  "startLine": 44
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "RS-SECRET-001",
+          "level": "error",
+          "message": {
+            "text": "Possible hardcoded credential assigned to 'STRIPE_API_KEY'."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "user_service.py"
+                },
+                "region": {
+                  "startLine": 13
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "RS-INJECT-001",
+          "level": "error",
+          "message": {
+            "text": "SQL query appears to be assembled with string formatting/concatenation instead of parameterized bindings."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "user_service.py"
+                },
+                "region": {
+                  "startLine": 18
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "RS-INJECT-002",
+          "level": "error",
+          "message": {
+            "text": "Shell command uses os.system or shell=True; verify inputs cannot control the command."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "user_service.py"
+                },
+                "region": {
+                  "startLine": 33
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "RS-TRAVERSE-001",
+          "level": "error",
+          "message": {
+            "text": "Path traversal risk: open() with dynamic path \u2014 validate and sanitize the path argument."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "user_service.py"
+                },
+                "region": {
+                  "startLine": 49
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "RS-CRYPTO-001",
+          "level": "warning",
+          "message": {
+            "text": "MD5 is unsuitable for security-sensitive hashing; use a modern hash or password KDF as appropriate."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "user_service.py"
+                },
+                "region": {
+                  "startLine": 28
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "RS-EVAL-004",
+          "level": "warning",
+          "message": {
+            "text": "yaml.load() without SafeLoader can instantiate arbitrary Python objects from untrusted YAML."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "user_service.py"
+                },
+                "region": {
+                  "startLine": 39
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "RS-CRYPTO-003",
+          "level": "warning",
+          "message": {
+            "text": "Use of insecure random module \u2014 use secrets or os.urandom for cryptographic purposes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "user_service.py"
+                },
+                "region": {
+                  "startLine": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

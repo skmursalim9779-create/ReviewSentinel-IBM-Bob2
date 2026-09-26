@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: reviewsentinel
+    env: docker
+    plan: free
+    autoDeploy: true

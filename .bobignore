@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+.pytest_cache/
+reports/
+bob_sessions/
+.env
+.git/
+node_modules/
+*.zip
+*.tar

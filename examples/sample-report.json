@@ -1,0 +1,92 @@
+{
+  "tool": {
+    "name": "ReviewSentinel",
+    "version": "0.2.0"
+  },
+  "summary": {
+    "files_scanned": 1,
+    "scan_seconds": 0.003,
+    "findings": 6,
+    "risk_score": 42,
+    "severity": {
+      "critical": 1,
+      "high": 3,
+      "medium": 2
+    },
+    "categories": {
+      "injection": 2,
+      "crypto": 1,
+      "deserialization": 1,
+      "execution": 1,
+      "secrets": 1
+    }
+  },
+  "findings": [
+    {
+      "rule_id": "RS-EVAL-001",
+      "severity": "critical",
+      "file": "user_service.py",
+      "line": 41,
+      "message": "Use of eval() on dynamic input.",
+      "snippet": "return eval(user_expression)",
+      "category": "execution",
+      "explanation": "",
+      "suggested_fix": ""
+    },
+    {
+      "rule_id": "RS-SECRET-001",
+      "severity": "high",
+      "file": "user_service.py",
+      "line": 10,
+      "message": "Possible hardcoded credential assigned to 'STRIPE_API_KEY'.",
+      "snippet": "STRIPE_API_KEY = \"[REDACTED]\"",
+      "category": "secrets",
+      "explanation": "",
+      "suggested_fix": ""
+    },
+    {
+      "rule_id": "RS-INJECT-001",
+      "severity": "high",
+      "file": "user_service.py",
+      "line": 15,
+      "message": "SQL query appears to be assembled with string formatting/concatenation instead of parameterized bindings.",
+      "snippet": "query = \"SELECT * FROM users WHERE id = \" + str(user_id)",
+      "category": "injection",
+      "explanation": "",
+      "suggested_fix": ""
+    },
+    {
+      "rule_id": "RS-INJECT-002",
+      "severity": "high",
+      "file": "user_service.py",
+      "line": 30,
+      "message": "Shell command uses os.system or shell=True; verify inputs cannot control the command.",
+      "snippet": "subprocess.run(f\"cat {filename} > /tmp/out.txt\", shell=True)",
+      "category": "injection",
+      "explanation": "",
+      "suggested_fix": ""
+    },
+    {
+      "rule_id": "RS-CRYPTO-001",
+      "severity": "medium",
+      "file": "user_service.py",
+      "line": 25,
+      "message": "MD5 is unsuitable for security-sensitive hashing; use a modern hash or password KDF as appropriate.",
+      "snippet": "return hashlib.md5(password.encode()).hexdigest()",
+      "category": "crypto",
+      "explanation": "",
+      "suggested_fix": ""
+    },
+    {
+      "rule_id": "RS-EVAL-004",
+      "severity": "medium",
+      "file": "user_service.py",
+      "line": 36,
+      "message": "yaml.load() without SafeLoader can instantiate arbitrary Python objects from untrusted YAML.",
+      "snippet": "return yaml.load(raw_yaml)",
+      "category": "deserialization",
+      "explanation": "",
+      "suggested_fix": ""
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+[console_scripts]
+reviewsentinel = reviewsentinel.cli:main
+reviewsentinel-web = reviewsentinel.web:main

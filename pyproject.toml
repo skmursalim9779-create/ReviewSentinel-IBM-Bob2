@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reviewsentinel"
+version = "0.2.0"
+description = "Agentic code-review and security audit copilot for IBM Bob 2.0 hackathon"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "requests>=2.31",
+  "pyyaml>=6.0",
+]
+
+[project.scripts]
+reviewsentinel = "reviewsentinel.cli:main"
+reviewsentinel-web = "reviewsentinel.web:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
