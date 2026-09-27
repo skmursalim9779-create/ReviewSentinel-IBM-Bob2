@@ -45,8 +45,34 @@ h1 { margin:0 0 6px; font-size:38px; } p { color:#a9b4ce; }
 .panel { background:#131a2e; border:1px solid #27304a; border-radius:16px; padding:18px; margin:16px 0; }
 textarea,input { width:100%; box-sizing:border-box; background:#0b1020; color:#fff; border:1px solid #34405e; border-radius:10px; padding:12px; }
 textarea { min-height:150px; resize:vertical; }
-button { background:#4f7cff; color:white; border:0; border-radius:10px; padding:11px 15px; font-weight:700; cursor:pointer; }
+button {
+  background:#4f7cff;
+  color:white;
+  border:0;
+  border-radius:10px;
+  padding:11px 15px;
+  font-weight:700;
+  cursor:pointer;
+  transition: transform 0.12s ease, box-shadow 0.18s ease, filter 0.15s ease, background 0.18s ease;
+}
 button.secondary { background:#26314e; }
+
+/* Clear, visible click feedback for the two primary review actions. */
+button.action-active {
+  background:#4f7cff !important;
+  box-shadow:0 0 0 4px rgba(79,124,255,0.30);
+}
+
+button.click-feedback {
+  animation: buttonClickFeedback 0.55s ease;
+}
+
+@keyframes buttonClickFeedback {
+  0%   { transform:scale(1);    filter:brightness(1); }
+  35%  { transform:scale(0.96); filter:brightness(1.12); }
+  70%  { transform:scale(1.02); filter:brightness(1.06); }
+  100% { transform:scale(1);    filter:brightness(1); }
+}
 .controls { display:grid; gap:10px; }
 .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:16px 0; }
 .card { background:#11182a; border:1px solid #27304a; padding:16px; border-radius:14px; }
@@ -64,7 +90,7 @@ pre { white-space:pre-wrap; overflow:auto; background:#080c17; border-radius:8px
 <div class="hero"><div><div class="muted">IBM Bob 2.0 hackathon prototype</div><h1>ReviewSentinel</h1><p>Scan → explain → report. Turn repetitive security review into a reproducible developer workflow.</p></div></div>
 <div class="panel">
 <h2>Run a review</h2>
-<div class="row"><button onclick="runSample()">Scan demo repo</button><button class="secondary" onclick="document.getElementById('code').value='api_key = &quot;sk-demo-replace-me&quot;\nquery = &quot;SELECT * FROM users WHERE id = &quot; + user_id\nimport hashlib\nhashlib.md5(password.encode())'">Load code example</button></div>
+<div class="row"><button onclick="runSample(this)">Scan demo repo</button><button class="secondary" onclick="loadCodeExample(this)">Load code example</button></div>
 <div class="controls" style="margin-top:12px"><label>Public GitHub repository URL</label><input id="github" placeholder="https://github.com/owner/repo"><button onclick="runGithub()">Scan public GitHub repo</button><label>Or paste one file for a quick review</label><textarea id="code" placeholder="Paste Python / JS / TS / Java / Go / Ruby / PHP code here"></textarea><input id="filename" value="snippet.py"><button onclick="runCode()">Review pasted code</button></div>
 </div>
 <div id="status" class="panel muted">Ready.</div>
@@ -85,7 +111,34 @@ async function post(body){
  const r=await fetch('/api/scan',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}); const d=await r.json();
  if(!r.ok){setStatus(d.error||'Request failed');return;} setStatus('Review complete.'); render(d);
 }
-function runSample(){post({source:'sample'});}
+function setActionFeedback(button, text){
+  document.querySelectorAll('.row button').forEach(b => b.classList.remove('action-active'));
+
+  button.classList.add('action-active');
+  button.classList.remove('click-feedback');
+  void button.offsetWidth;
+  button.classList.add('click-feedback');
+  button.textContent = text;
+
+  setTimeout(() => button.classList.remove('click-feedback'), 550);
+}
+
+function loadCodeExample(button){
+  document.getElementById('code').value =
+    'api_key = "sk-demo-replace-me"\n' +
+    'query = "SELECT * FROM users WHERE id = " + user_id\n' +
+    'import hashlib\n' +
+    'hashlib.md5(password.encode())';
+
+  setActionFeedback(button, '✓ Example loaded');
+  setStatus('Example loaded — ready to review.');
+}
+
+function runSample(button){
+  setActionFeedback(button, '✓ Scanning demo…');
+  post({source:'sample'});
+}
+
 function runCode(){post({source:'code',filename:document.getElementById('filename').value,content:document.getElementById('code').value});}
 function runGithub(){post({source:'github',url:document.getElementById('github').value});}
 </script>
